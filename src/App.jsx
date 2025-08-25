@@ -38,7 +38,7 @@ function App() {
     </div>
 
     <div style={{ padding: 20 }}>
-      <h1>Models</h1>
+      <h1>Reference</h1>
       <ModelBrowser />
     </div>
     

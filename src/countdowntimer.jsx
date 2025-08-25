@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import chimeUrl from "./assets/guitar-chime.mp3"; // <- your file
+import chimeUrl from "./assets/guitar-chime.mp3"; // your file
 
-function pad2(n) {
-  return String(n).padStart(2, "0");
-}
+function pad2(n) { return String(n).padStart(2, "0"); }
 function formatHMS(totalSeconds) {
   const h = Math.floor(totalSeconds / 3600);
   const m = Math.floor((totalSeconds % 3600) / 60);
@@ -15,17 +13,19 @@ export default function CountdownTimer() {
   const [remaining, setRemaining] = useState(0);
   const [initialSeconds, setInitialSeconds] = useState(0);
   const [paused, setPaused] = useState(true);
+  const [autoRestart, setAutoRestart] = useState(false);
+  const [resting, setResting] = useState(false);
+  const [restSeconds, setRestSeconds] = useState(5); // NEW: configurable rest
 
   const [h, setH] = useState("0");
   const [m, setM] = useState("0");
   const [s, setS] = useState("0");
 
-  // one audio instance for the component lifetime
   const audioRef = useRef(null);
   useEffect(() => {
     const a = new Audio(chimeUrl);
     a.preload = "auto";
-    a.volume = 0.9; // tweak if you want
+    a.volume = 0.9;
     audioRef.current = a;
     return () => {
       if (audioRef.current) {
@@ -35,33 +35,44 @@ export default function CountdownTimer() {
     };
   }, []);
 
-  // tick every second while running
+  // tick while running
   useEffect(() => {
     if (paused || remaining <= 0) return;
-
     const id = setInterval(() => {
-      setRemaining((prev) => {
-        if (prev <= 1) return 0; // stop at zero
-        return prev - 1;
-      });
+      setRemaining((prev) => (prev <= 1 ? 0 : prev - 1));
     }, 1000);
-
     return () => clearInterval(id);
   }, [paused, remaining]);
 
-  // when we hit zero, play chime and auto-pause
+  // handle hitting zero (main or rest)
   useEffect(() => {
     if (remaining === 0 && !paused) {
-      setPaused(true);
+      // chime whenever a phase ends
       const a = audioRef.current;
-      if (a) {
-        a.currentTime = 0;
-        a.play().catch(() => {
-          // Some browsers require a user gesture; Start button usually satisfies this.
-        });
+      if (a) { a.currentTime = 0; a.play().catch(() => {}); }
+
+      if (resting) {
+        // rest just finished → start main round
+        setResting(false);
+        if (initialSeconds > 0) setRemaining(initialSeconds);
+        else setPaused(true);
+        return;
+      }
+
+      // main round finished
+      if (autoRestart && initialSeconds > 0) {
+        if (restSeconds > 0) {
+          setResting(true);
+          setRemaining(restSeconds);
+        } else {
+          // no rest → immediate restart
+          setRemaining(initialSeconds);
+        }
+      } else {
+        setPaused(true);
       }
     }
-  }, [remaining, paused]);
+  }, [remaining, paused, resting, autoRestart, initialSeconds, restSeconds]);
 
   function parseIntSafe(v) {
     const n = parseInt(v, 10);
@@ -75,26 +86,35 @@ export default function CountdownTimer() {
     const total = hours * 3600 + mins * 60 + secs;
     setInitialSeconds(total);
     setRemaining(total);
-    setPaused(true); // user presses Start to begin
+    setPaused(true);
+    setResting(false);
   }
 
   function handleStartPause() {
-    if (remaining <= 0) return; // nothing to run
+    // allow start if we have a configured time, even if remaining is 0
+    const canStart = remaining > 0 || initialSeconds > 0;
+    if (!canStart) return;
+    if (remaining === 0 && initialSeconds > 0) {
+      // resume from initial if user hits Start at 0
+      setRemaining(initialSeconds);
+    }
     setPaused((p) => !p);
   }
 
   function handleReset() {
     setRemaining(initialSeconds);
     setPaused(true);
+    setResting(false);
   }
 
   return (
-    <div style={{ display: "grid", gap: "0.75rem", maxWidth: 360 }}>
+    <div style={{ display: "grid", gap: "0.75rem", maxWidth: 520 }}>
       <div style={{ fontSize: "2.25rem", fontWeight: 700, textAlign: "center" }}>
-        {formatHMS(remaining)}
+        {resting ? `Rest: ${formatHMS(remaining)}` : formatHMS(remaining)}
       </div>
 
-      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+      {/* Time inputs */}
+      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
         <label>
           H
           <input type="number" min="0" value={h} onChange={(e) => setH(e.target.value)} style={{ width: 64, marginLeft: 6 }} />
@@ -110,12 +130,35 @@ export default function CountdownTimer() {
         <button onClick={handleSetTime} style={{ marginLeft: "auto" }}>Set</button>
       </div>
 
-      <div style={{ display: "flex", gap: "0.5rem" }}>
-        <button onClick={handleStartPause} disabled={remaining === 0 && paused}>
+      {/* Controls + options */}
+      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
+        <button onClick={handleStartPause} disabled={remaining === 0 && initialSeconds === 0 && paused}>
           {paused ? "Start" : "Pause"}
         </button>
-        <button onClick={handleReset} disabled={initialSeconds === remaining}>Reset</button>
-        <button onClick={() => { setRemaining(0); setPaused(true); }}>Clear</button>
+        <button onClick={handleReset} disabled={initialSeconds === remaining && !resting}>Reset</button>
+        <button onClick={() => { setRemaining(0); setPaused(true); setResting(false); }}>Clear</button>
+
+        <label style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 8 }}>
+          <input
+            type="checkbox"
+            checked={autoRestart}
+            onChange={(e) => setAutoRestart(e.target.checked)}
+          />
+          Auto-restart
+        </label>
+
+        {/* NEW: Rest seconds */}
+        <label style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+          Rest (sec)
+          <input
+            type="number"
+            min="0"
+            max="600"
+            value={restSeconds}
+            onChange={(e) => setRestSeconds(parseIntSafe(e.target.value))}
+            style={{ width: 72 }}
+          />
+        </label>
       </div>
     </div>
   );
