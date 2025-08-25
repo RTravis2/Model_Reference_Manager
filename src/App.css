@@ -1,0 +1,217 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* exactly 3 columns */
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .model-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .model-grid { grid-template-columns: 1fr; }
+}
+
+.model-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.thumb-wrap {
+  aspect-ratio: 1 / 1;   /* square */
+  background: #222;
+  overflow: hidden;
+}
+
+.thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* zoom/crop to fill the square nicely */
+  display: block;
+}
+
+
+.model-name {
+  padding: 10px 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .model-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .model-grid { grid-template-columns: 1fr; }
+}
+
+.model-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  text-align: left;
+}
+.model-card--button {
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.model-card--button:hover .thumb-wrap img {
+  transform: scale(1.03);
+}
+.thumb-wrap {
+  aspect-ratio: 1 / 1;  /* square */
+  background: #222;
+  overflow: hidden;
+}
+.thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 180ms ease-out;
+}
+.model-name {
+  padding: 10px 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.back-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 16px;
+}
+.back-row button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #2a2a2a;
+  background: #161616;
+  color: #fff;
+  cursor: pointer;
+}
+.gallery-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* Lightbox overlay */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.86);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+/* Scales to fit screen; keeps aspect ratio */
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+  border-radius: 8px;
+}
+
+/* Close button */
+.lightbox-close {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  font-size: 20px;
+  line-height: 1;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Nav arrows */
+.lightbox-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;                    /* remove native padding */
+  display: flex;                 /* center the glyph */
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;               /* arrow size */
+  line-height: 1;                /* avoid baseline offset */
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  cursor: pointer;
+  z-index: 1002;                 /* stay above everything */
+  -webkit-appearance: none;      /* normalize Safari */
+  appearance: none;
+}
+
+.lightbox-nav.left  { left: 18px; }
+.lightbox-nav.right { right: 18px; }
+
+.lightbox-nav:hover { background: rgba(255,255,255,0.18); }
