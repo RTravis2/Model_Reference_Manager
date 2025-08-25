@@ -1,12 +1,25 @@
-# React + Vite
+# Model Manager Reference App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A reference app for artsits using Vite + React
 
-Currently, two official plugins are available:
+# To start locally...
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- #### Install this repository
 
-## Expanding the ESLint configuration
+- #### install node.js
+- I used the LTS version (https://nodejs.org/en)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- #### Install Node Dependencies
+- Once node.js is installed make sure to install dependencies w/ command npm install
+
+- #### Start locally
+- npm run dev
+- if it tells you that vite is not recognized, then make sure to check that the node environment variable is set to "development"
+- echo $env:NODE_ENV
+- Should = development, not production
+- to replace: $env:NODE_ENV="development"
+
+- #### Open in browser
+- use the localhost link that cmd gave you
+
+
