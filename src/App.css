@@ -215,3 +215,19 @@
 .lightbox-nav.right { right: 18px; }
 
 .lightbox-nav:hover { background: rgba(255,255,255,0.18); }
+
+.lightbox-toolbar {
+  z-index: 2000; /* higher than the image */
+}
+
+.lightbox-toolbar button {
+  color: #fff;
+  background: rgba(0,0,0,.6);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.lightbox-toolbar button:hover {
+  background: rgba(255,255,255,.15);
+}
